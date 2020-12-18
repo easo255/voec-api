@@ -17,7 +17,6 @@ app.get('/api/allCompanies', (req, res) => {
 })
 
 app.get('/api/getCompany', (req, res) => {
-    console.log(req.query.url);
     const company = registeredCompanies.find(c => c.url === req.query.url);
     if(!company) res.status(404).send('Selskapet er ikke registrert');
     res.send(company);
