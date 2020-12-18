@@ -5,6 +5,8 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const https = require('https');
 const fs = require('fs');
+const psl = require('psl');
+const utils = require('./utils');
 let registeredCompanies = '';
 
 
@@ -19,7 +21,8 @@ app.get('/api/allCompanies', (req, res) => {
 })
 
 app.get('/api/getCompany', (req, res) => {
-    const company = registeredCompanies.find(c => c.url === req.query.url);
+    let hostName = psl.get(utils.extractHostName(req.query.url));
+    const company = registeredCompanies.find(c => c.url === hostName);
     if(!company) res.status(404).send('Selskapet er ikke registrert');
     res.send(company);
 })
@@ -48,6 +51,7 @@ function scrape(){
       });
 
 }
+
 
 function parseDocument(){
         pdfTableExtractor('voec-downloaded.pdf').then(parsedVoecDoc => {
