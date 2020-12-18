@@ -5,11 +5,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const https = require('https');
 const fs = require('fs');
-
-const { parse } = require('path');
-const { callbackify } = require('util');
-let registeredCompanies = [];
-const parsedVoecDoc = require('./parsed-voec.json');
+let registeredCompanies = '';
 
 
 
@@ -33,31 +29,6 @@ function onStart(){
     scrape();
 }
 
-function parseDocument(){
-    pdfTableExtractor('voec-downloaded.pdf').then(res => {
-
-        try{
-            fs.writeFileSync('parsed-voec.json', JSON.stringify(res));
-        } catch(error){
-            console.log(error);
-        }
-    });
-
-    let pageTables = parsedVoecDoc.pageTables;
-    let allPages =[]; 
-    
-    for (i = 0; i< parsedVoecDoc.numPages; i++){
-        pageTables[i].tables.shift();
-        pageTables[i].tables.shift();
-        allPages.push(pageTables[i].tables);
-    }
-
-    let flattenedArray = allPages.flat(1);
-    flattenedArray.unshift(["companyName", "countryCode", "url"]);
-    const [keys, ...values] = flattenedArray;
-    registeredCompanies = values.map(array => array.reduce((a, v, i) => ({...a, [keys[i]]: v}), {}));
-}
-
 function scrape(){
     const url = 'https://www.skatteetaten.no/bedrift-og-organisasjon/avgifter/mva/utland/e-handel-voec/nettbutikker-og-e-markedsplasser-som-er-registrert-i-voec-registeret/';
     axios(url)
@@ -72,8 +43,35 @@ function scrape(){
         https.get(documentLink, function(response) {
             response.pipe(file);
             });
+
+            file.on('finish', () => parseDocument());
       });
-    
+
 }
+
+function parseDocument(){
+        pdfTableExtractor('voec-downloaded.pdf').then(parsedVoecDoc => {
+            let pageTables = parsedVoecDoc.pageTables;
+            let allPages =[]; 
+            
+            for (i = 0; i< parsedVoecDoc.numPages; i++){
+                pageTables[i].tables.shift();
+                pageTables[i].tables.shift();
+                allPages.push(pageTables[i].tables);
+            }
+        
+            let flattenedArray = allPages.flat(1);
+            flattenedArray.unshift(["companyName", "countryCode", "url"]);
+            const [keys, ...values] = flattenedArray;
+            let finalArray = values.map(array => array.reduce((a, v, i) => ({...a, [keys[i]]: v}), {}));
+
+            fs.writeFile('parsed-voec.json', JSON.stringify(finalArray), (err) => {
+                if (err) throw err;
+                console.log('Data written to file');
+                registeredCompanies = require('./parsed-voec.json');
+            });
+        });
+}
+
 
 app.listen(3000, () => onStart());
