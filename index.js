@@ -7,16 +7,17 @@ const https = require('https');
 const fs = require('fs');
 const psl = require('psl');
 const utils = require('./utils');
+const cron = require('node-cron');
+
 let registeredCompanies = '';
 let extractionDateTime = '';
 
 
 
 
-app.get('/', (req, res) =>{
+app.get('/', (req, res) => {
     res.send('VOEC API');
 });
-
 
 app.get('/api/allCompanies', (req, res) => {
     res.send(registeredCompanies);
@@ -37,13 +38,19 @@ app.get('/api/extractionDateTime', (req, res) => {
     res.send(extractionDateTimeObj);
 })
 
-function onStart(){
+function onStart() {
     console.log('Listening on port 3000');
-    //scrape();
-    parseDocument();
+    scrape();
 }
 
-function scrape(){
+
+cron.schedule('0 00 8 * * 0-6', function() {
+    console.log('Daily task running');
+    scrape();
+});
+
+
+function scrape() {
     const url = 'https://www.skatteetaten.no/bedrift-og-organisasjon/avgifter/mva/utland/e-handel-voec/nettbutikker-og-e-markedsplasser-som-er-registrert-i-voec-registeret/';
     axios(url)
       .then(response => {
