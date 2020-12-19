@@ -44,7 +44,7 @@ function onStart() {
 }
 
 
-cron.schedule('0 00 8 * * 0-6', function() {
+cron.schedule('0 00 10 * * 0-6', function() {
     console.log('Daily task running');
     scrape();
 });
