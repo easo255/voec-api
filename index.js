@@ -8,11 +8,13 @@ const fs = require('fs');
 const psl = require('psl');
 const utils = require('./utils');
 let registeredCompanies = '';
+let extractionDate = '';
 
 
 
 
 app.get('/', (req, res) =>{
+    res.send('VOEC API');
 });
 
 
@@ -22,9 +24,13 @@ app.get('/api/allCompanies', (req, res) => {
 
 app.get('/api/getCompany', (req, res) => {
     let hostName = psl.get(utils.extractHostName(req.query.url));
-    const company = registeredCompanies.find(c => c.url === hostName);
+    const company = registeredCompanies.find(c => psl.get(utils.extractHostName(c.url)) === hostName);
     if(!company) res.status(404).send('Selskapet er ikke registrert');
     res.send(company);
+})
+
+app.get('/api/extractionDate', (req, res) => {
+    res.send(extractionDate);
 })
 
 function onStart(){
@@ -57,13 +63,15 @@ function parseDocument(){
         pdfTableExtractor('voec-downloaded.pdf').then(parsedVoecDoc => {
             let pageTables = parsedVoecDoc.pageTables;
             let allPages =[]; 
-            
+            let locationOfExtractionDate = pageTables[0].tables[0].toString();
+            extractionDate = locationOfExtractionDate.substring(locationOfExtractionDate.length -18)
+
             for (i = 0; i< parsedVoecDoc.numPages; i++){
                 pageTables[i].tables.shift();
                 pageTables[i].tables.shift();
                 allPages.push(pageTables[i].tables);
             }
-        
+    
             let flattenedArray = allPages.flat(1);
             flattenedArray.unshift(["companyName", "countryCode", "url"]);
             const [keys, ...values] = flattenedArray;
