@@ -1,6 +1,8 @@
 # voec-api
  
-Enkelt Node.js API som gjør det mulig å få hente ut registrerte virksomheter fra [VOEC Registeret](https://www.toll.no/no/netthandel/1.april/voec/). Hver dag foretar serveren en automatisk nedlasting av PDF dokumentet med registrerte bedrifter, og gjør dette om til JSON. 
+Enkelt Node.js API som gjør det mulig å få hente ut registrerte virksomheter fra [VOEC Registeret](https://www.toll.no/no/netthandel/1.april/voec/). Denne dataen er kun tilgjengelig som PDF, via [skatteetaten.no](https://www.skatteetaten.no/bedrift-og-organisasjon/avgifter/mva/utland/e-handel-voec/nettbutikker-og-e-markedsplasser-som-er-registrert-i-voec-registeret/). 
+
+En gang daglig foretar serveren en automatisk nedlasting av PDF dokumentet med registrerte bedrifter, og gjør dette om til JSON som deretter kan hentes ut ved å ta i bruk de forskjellige endepunktene. 
 
 
 ## Endepunkter
@@ -68,8 +70,9 @@ Full URL kan også brukes, feks
 
 ### Dato og tid for PDF uttrekket
 
-`GET api/extractionDateTime`
+PDF-en inkluderer dato/tidspunkt for siste uttrekk av registrerte bedrifter.
 
+`GET api/extractionDateTime`
 
 ````
 {
