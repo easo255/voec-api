@@ -100,4 +100,4 @@ function parseDocument(){
 }
 
 
-app.listen(3000, () => onStart());
+app.listen(process.env.PORT || 3000, () => onStart());
