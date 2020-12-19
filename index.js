@@ -8,7 +8,7 @@ const fs = require('fs');
 const psl = require('psl');
 const utils = require('./utils');
 let registeredCompanies = '';
-let extractionDate = '';
+let extractionDateTime = '';
 
 
 
@@ -29,13 +29,18 @@ app.get('/api/getCompany', (req, res) => {
     res.send(company);
 })
 
-app.get('/api/extractionDate', (req, res) => {
-    res.send(extractionDate);
+app.get('/api/extractionDateTime', (req, res) => {
+    let extractionDateTimeObj = {
+        extractionDateTime:extractionDateTime
+    }
+
+    res.send(extractionDateTimeObj);
 })
 
 function onStart(){
     console.log('Listening on port 3000');
-    scrape();
+    //scrape();
+    parseDocument();
 }
 
 function scrape(){
@@ -64,7 +69,9 @@ function parseDocument(){
             let pageTables = parsedVoecDoc.pageTables;
             let allPages =[]; 
             let locationOfExtractionDate = pageTables[0].tables[0].toString();
-            extractionDate = locationOfExtractionDate.substring(locationOfExtractionDate.length -18)
+            let extractionDate = locationOfExtractionDate.substring(locationOfExtractionDate.length -18)
+            extractionDateTime = extractionDate.substring(0, extractionDate.length -2);
+
 
             for (i = 0; i< parsedVoecDoc.numPages; i++){
                 pageTables[i].tables.shift();
