@@ -4,6 +4,11 @@ Enkelt Node.js API som gjør det mulig å få hente ut registrerte virksomheter 
 
 En gang daglig foretar serveren en automatisk nedlasting av PDF dokumentet med registrerte bedrifter, og gjør dette om til JSON som deretter kan hentes ut ved å ta i bruk de forskjellige endepunktene. 
 
+## Demo
+
+Demo på heroku:
+
+https://voec-api.herokuapp.com/
 
 ## Endepunkter
 
