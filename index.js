@@ -9,7 +9,7 @@ const psl = require('psl');
 const utils = require('./utils');
 const cron = require('node-cron');
 
-let registeredCompanies = '';
+let registeredCompanies = require('./parsed-voec.json');
 let extractionDateTime = '';
 
 
@@ -40,7 +40,6 @@ app.get('/api/extractionDateTime', (req, res) => {
 
 function onStart() {
     console.log('Listening on port 3000');
-    scrape();
 }
 
 
