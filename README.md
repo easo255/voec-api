@@ -10,6 +10,10 @@ Demo på heroku:
 
 https://voec-api.herokuapp.com/
 
+## Start
+
+Startes med `npm start` eller `node index.js`
+
 ## Endepunkter
 
 ### Spesifikt URL søk for selskap
