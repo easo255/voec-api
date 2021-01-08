@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@florpor/pdf-table-extractor": "^1.0.6",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "cheerio": "^1.0.0-rc.3",
     "express": "^4.17.1",
     "node-cron": "^2.0.3",
